@@ -65,5 +65,8 @@ dkms.conf
 /autom4te.cache/
 /compile
 /depcomp
+/test-driver
 
 /build/
+/compile_commands.json
+/.cache/
