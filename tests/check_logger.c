@@ -3,12 +3,26 @@
 #include <check.h>
 
 START_TEST(test_string) { 
-  log_message("pada");
+  LOG_ERROR("TEST");
 }
 END_TEST
 
 START_TEST(test_null) { 
-  log_message(NULL);
+  LOG_ERROR(NULL);
+}
+END_TEST
+
+START_TEST(test_non_standard_log_level) {
+  log_message(124, "TEST");
+}
+
+START_TEST(test_long_message) {
+  int len = 6000;
+  char buffer[len];
+  for (int i = 0; i < len; i++) {
+    buffer[i] = 'a';
+  }
+  LOG_ERROR(buffer);
 }
 END_TEST
 
@@ -19,6 +33,8 @@ Suite *logger_suite(void) {
   tc_core = tcase_create("Core");
   tcase_add_test(tc_core, test_string);
   tcase_add_test(tc_core, test_null);
+  tcase_add_test(tc_core, test_non_standard_log_level);
+  tcase_add_test(tc_core, test_long_message);
   suite_add_tcase(s, tc_core);
   return s;
 }

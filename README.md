@@ -3,7 +3,9 @@ An Linux (X11) app that displays the name of the currently listened song on Spot
 
 ## TODOs
 - [ ] Logger
-    - [ ] Write tests
+    - [x] Write tests
     - [ ] Output files
-    - [ ] Logging levels
+    - [x] Logging levels
+    - [ ] Timestamps
     - [ ] String formating
+    - [ ] Stack Trace
