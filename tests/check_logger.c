@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <check.h>
 
@@ -15,6 +16,15 @@ END_TEST
 START_TEST(test_non_standard_log_level) {
   log_message(124, "TEST");
 }
+END_TEST
+
+START_TEST(test_heap_string) {
+  char *msg;
+  asprintf(&msg, "TEST");
+  LOG_ERROR(msg);
+  free(msg);
+}
+END_TEST
 
 START_TEST(test_long_message) {
   int len = 6000;
@@ -35,6 +45,7 @@ Suite *logger_suite(void) {
   tcase_add_test(tc_core, test_null);
   tcase_add_test(tc_core, test_non_standard_log_level);
   tcase_add_test(tc_core, test_long_message);
+  tcase_add_test(tc_core, test_heap_string);
   suite_add_tcase(s, tc_core);
   return s;
 }
