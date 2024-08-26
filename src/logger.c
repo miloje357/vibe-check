@@ -4,16 +4,21 @@
 #include <string.h>
 #include <time.h>
 
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_YELLOW "\x1b[33m"
+#define ANSI_COLOR_CYAN "\x1b[36m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+
 const char *log_lvl_to_str(LogLevel lvl) {
   switch (lvl) {
   case LOG_LEVEL_DEBUG:
-    return "DEBUG";
+    return ANSI_COLOR_CYAN "DEBUG" ANSI_COLOR_RESET;
   case LOG_LEVEL_INFO:
     return "INFO";
   case LOG_LEVEL_WARNING:
-    return "WARNING";
+    return ANSI_COLOR_YELLOW "WARNING" ANSI_COLOR_RESET;
   case LOG_LEVEL_ERROR:
-    return "ERROR";
+    return ANSI_COLOR_RED "ERROR" ANSI_COLOR_RESET;
   }
   return NULL;
 }
@@ -38,7 +43,7 @@ void log_message(LogLevel lvl, const char *message) {
   }
 
   if (strlen(message) >= MAX_MESSAGE_LEN) {
-    fprintf(stderr, "Log message too long\n");
+    fprintf(stderr, ANSI_COLOR_RED "Log message too long\n" ANSI_COLOR_RESET);
     return;
   }
 
@@ -47,7 +52,7 @@ void log_message(LogLevel lvl, const char *message) {
   set_timestamp(timestamp, timestamp_len);
 
   char *formated_message;
-  asprintf(&formated_message, "[%s] %s %s", timestamp, lvl_str, message);
+  asprintf(&formated_message, "[%s %s] %s", timestamp, lvl_str, message);
   puts(formated_message);
   free(formated_message);
 }
