@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,8 @@
 #define ANSI_COLOR_YELLOW "\x1b[33m"
 #define ANSI_COLOR_CYAN "\x1b[36m"
 #define ANSI_COLOR_RESET "\x1b[0m"
+
+LogLevel used_log_level = LOG_LEVEL_INFO;
 
 const char *log_lvl_to_str(LogLevel lvl) {
   switch (lvl) {
@@ -32,18 +35,9 @@ void set_timestamp(char *str, size_t str_len) {
 
 void log_message(LogLevel lvl, const char *message) {
   const char *lvl_str = log_lvl_to_str(lvl);
-  if (!lvl_str) {
-    fprintf(stderr, "Non-standard LogLevel\n");
-    return;
-  }
-
-  if (!message) {
-    fprintf(stderr, "Can't log NULL\n");
-    return;
-  }
 
   if (strlen(message) >= MAX_MESSAGE_LEN) {
-    fprintf(stderr, ANSI_COLOR_RED "Log message too long\n" ANSI_COLOR_RESET);
+    DEV_ERROR("Log message too long");
     return;
   }
 
@@ -56,3 +50,34 @@ void log_message(LogLevel lvl, const char *message) {
   puts(formated_message);
   free(formated_message);
 }
+
+void log_fmessage(LogLevel lvl, const char *format_string, ...) {
+  if (!log_lvl_to_str(lvl)) {
+    DEV_ERROR("Non-standard LogLevel")
+    return;
+  }
+
+  if (used_log_level > lvl) {
+    return;
+  }
+
+  if (!format_string) {
+    DEV_ERROR("Can't log NULL")
+    return;
+  }
+
+  char *message;
+  va_list args;
+  va_start(args, format_string);
+  int status = vasprintf(&message, format_string, args);
+  va_end(args);
+
+  if (status <= 0) {
+    DEV_ERROR("vasprintf errored");
+    return;
+  }
+
+  log_message(lvl, message);
+}
+
+void set_log_level(LogLevel lvl) { used_log_level = lvl; }

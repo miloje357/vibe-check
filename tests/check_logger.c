@@ -1,27 +1,21 @@
 #include "logger.h"
+#include <check.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <check.h>
 
-START_TEST(test_string) { 
-  LOG_ERROR("TEST");
-}
+START_TEST(test_string) { LOG_ERROR("TEST"); }
 END_TEST
 
-START_TEST(test_null) { 
-  LOG_ERROR(NULL);
-}
+START_TEST(test_null) { LOG_ERROR(NULL); }
 END_TEST
 
-START_TEST(test_non_standard_log_level) {
-  log_message(124, "TEST");
-}
+START_TEST(test_non_standard_log_level) { log_fmessage(124, "TEST"); }
 END_TEST
 
 START_TEST(test_heap_string) {
   char *msg;
   asprintf(&msg, "TEST");
-  LOG_ERROR(msg);
+  LOG_ERROR("%s", msg);
   free(msg);
 }
 END_TEST
@@ -32,7 +26,20 @@ START_TEST(test_long_message) {
   for (int i = 0; i < len; i++) {
     buffer[i] = 'a';
   }
-  LOG_ERROR(buffer);
+  LOG_ERROR("%s", buffer);
+}
+END_TEST
+
+START_TEST(test_formating_const_string) {
+  LOG_ERROR("TEST %s %s", "TEST", "TEST");
+}
+END_TEST
+
+START_TEST(test_formating_heap_string) {
+  char *test;
+  asprintf(&test, "HEAP");
+  LOG_ERROR("TEST %s %s", test, test);
+  free(test);
 }
 END_TEST
 
@@ -46,6 +53,8 @@ Suite *logger_suite(void) {
   tcase_add_test(tc_core, test_non_standard_log_level);
   tcase_add_test(tc_core, test_long_message);
   tcase_add_test(tc_core, test_heap_string);
+  tcase_add_test(tc_core, test_formating_const_string);
+  tcase_add_test(tc_core, test_formating_heap_string);
   suite_add_tcase(s, tc_core);
   return s;
 }

@@ -8,5 +8,4 @@ An Linux (X11) app that displays the name of the currently listened song on Spot
     - [x] Logging levels
     - [x] Timestamps
     - [x] Colors
-    - [ ] String formating
-    - [ ] Stack Trace
+    - [x] String formating
