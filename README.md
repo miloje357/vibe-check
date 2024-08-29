@@ -2,9 +2,9 @@
 An Linux (X11) app that displays the name of the currently listened song on Spotify
 
 ## TODOs
-- [ ] Logger
+- [x] Logger
     - [x] Write tests
-    - [ ] Output files
+    - [x] Output files
     - [x] Logging levels
     - [x] Timestamps
     - [x] Colors
