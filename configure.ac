@@ -10,11 +10,10 @@ AC_CONFIG_HEADERS([config.h])
 # Checks for programs.
 AC_PROG_CC
 
+# Checks for libraries.
 PKG_CHECK_MODULES([CHECK], [check])
 AC_SUBST([CHECK_CFLAGS])
 AC_SUBST([CHECK_LIBS])
-
-# Checks for libraries.
 
 # Checks for header files.
 
