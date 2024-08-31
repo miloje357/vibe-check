@@ -22,6 +22,13 @@ typedef struct Logger {
 
 Logger *loggers[MAX_LOGGERS] = {NULL};
 
+void free_message_variables(char *formated_message, char *lvl_str) {
+  free(formated_message);
+  if (strlen(lvl_str) != 0) {
+    free(lvl_str);
+  }
+}
+
 void log_lvl_to_str(char **dest, LogLevel lvl, bool should_color) {
   const char *lvl_str = NULL;
   const char *color = "";
@@ -72,22 +79,22 @@ void log_message_to_logger(Logger *logger, LogLevel lvl, const char *message) {
   set_timestamp(timestamp, timestamp_len);
 
   char *formated_message;
-  asprintf(&formated_message, "[%s %s] %s\n", timestamp, lvl_str, message);
-
-  int s = fputs(formated_message, logger->output);
+  int s =
+      asprintf(&formated_message, "[%s %s] %s\n", timestamp, lvl_str, message);
   if (s <= 0) {
-    free(formated_message);
-    if (strlen(lvl_str) != 0) {
-      free(lvl_str);
-    }
+    DEV_ERROR("Coudln't allocate memory for log message: Not enough memory");
+    free_message_variables(formated_message, lvl_str);
+    return;
+  }
+
+  s = fputs(formated_message, logger->output);
+  if (s <= 0) {
+    free_message_variables(formated_message, lvl_str);
     DEV_ERROR("Coudn't log message: fputs errored");
     return;
   }
 
-  free(formated_message);
-  if (strlen(lvl_str) != 0) {
-    free(lvl_str);
-  }
+  free_message_variables(formated_message, lvl_str);
 }
 
 void log_message(LogLevel lvl, const char *message) {

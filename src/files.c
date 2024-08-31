@@ -41,7 +41,7 @@ bool has_cache(const char *dir) {
   }
 
   // cache_dir doesn't exist
-  if (!cache_dirpath && errno == ENOENT) {
+  if (!cache_dir && errno == ENOENT) {
     free(cache_dirpath);
     return false;
   }
