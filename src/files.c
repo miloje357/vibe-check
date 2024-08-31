@@ -31,7 +31,10 @@ void set_homedir(const char **dir) {
 
 bool has_cache(const char *dir) {
   char *cache_dirpath;
-  asprintf(&cache_dirpath, "%s/%s", dir, ".cache");
+  int s = asprintf(&cache_dirpath, "%s/%s", dir, ".cache");
+  if (s <= 0) {
+    LOG_ERROR("Can't check for cache: Not enough memory");
+  }
 
   DIR *cache_dir = opendir(cache_dirpath);
   if (!cache_dir && errno != ENOENT) {
@@ -67,6 +70,7 @@ int set_standard_root(char **dir) {
   }
   if (len <= 0) {
     LOG_ERROR("Can't open %s: Not enough memory", *dir);
+    *dir = NULL;
   }
 
   return len;
@@ -76,6 +80,7 @@ bool set_rootpath(const char *custom_root_path) {
   int len = asprintf(&vc_rootpath, "%s", custom_root_path);
   if (len <= 0) {
     LOG_ERROR("Can't open %s: Not enough memory", custom_root_path);
+    return false;
   }
 
   if (!custom_root_path) {
@@ -106,11 +111,16 @@ bool set_rootpath(const char *custom_root_path) {
 
 void free_rootpath() { free(vc_rootpath); }
 
-void set_token_filepath(char **path) {
+void set_log_filepath(char **path) {
   if (!vc_rootpath) {
     DEV_ERROR("Root path is null: Run set_rootpath() first");
     *path = NULL;
     return;
   }
-  asprintf(path, "%s/%s", vc_rootpath, TOKEN_FILENAME);
+  int s = asprintf(path, "%s/%s", vc_rootpath, LOG_FILENAME);
+  if (s <= 0) {
+    LOG_ERROR("Can't set log filepath: Not enough memory");
+    *path = NULL;
+    return;
+  }
 }

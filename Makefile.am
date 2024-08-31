@@ -2,7 +2,9 @@ bin_PROGRAMS = vibe_check
 vibe_check_SOURCES = \
 	src/main.c\
 	src/logger.c\
-	include/logger.h
+	src/files.c\
+	include/logger.h\
+	include/files.h
 vibe_check_CFLAGS = -g -Wall -Werror -O3\
 		    -I$(top_srcdir)/include
 

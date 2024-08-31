@@ -1,9 +1,10 @@
 #ifndef FILES_H_
 #define FILES_H_
 
+#include "config.h"
 #include <stdbool.h>
 
-#define TOKEN_FILENAME "token.json"
+#define LOG_FILENAME PACKAGE_NAME ".log"
 
 /**
  * Sets the root for all of the files that the vibe_check needs
@@ -24,11 +25,12 @@ bool set_rootpath(const char *custom_root_path);
 void free_rootpath();
 
 /**
- * Sets the path for the token file
- * @param path Path of the token file to be set
+ * Sets the path for the log file
+ * @param path Path of the log file to be set, NULL if an error ocurred
  * @see tests/check_files.c
  * @since 0.1.0
+ * Note: run set_rootpath() first
  */
-void set_token_filepath(char **path);
+void set_log_filepath(char **path);
 
 #endif
