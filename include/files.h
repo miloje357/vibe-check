@@ -9,7 +9,7 @@
 /**
  * Sets the root for all of the files that the vibe_check needs
  * @param custom_root_path If not set to NULL, uses it as the root, otherwise
- * uses the standard (~/.cache/vibe_check or ~/.vibe_check)
+ * uses the standard (~/.cache/vibe_check)
  * @return true if the root was successfully set, otherwise false
  * @see tests/check_files.c
  * @since 0.1.0
