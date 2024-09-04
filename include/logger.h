@@ -61,4 +61,11 @@ logger_id init_logger(FILE *output, LogLevel lvl, bool should_color);
  */
 bool close_logger(logger_id id);
 
+/**
+ * Closes all loggers (if any are initialized)
+ * @see tests/check_logger.c
+ * @since 0.1.0
+ */
+void close_all_loggers();
+
 #endif
