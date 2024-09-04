@@ -171,3 +171,13 @@ bool close_logger(logger_id id) {
   }
   return false;
 }
+
+void close_all_loggers() {
+  for (int i = 0; i < MAX_LOGGERS; i++) {
+    if (!loggers[i]) {
+      continue;
+    }
+    free(loggers[i]);
+    loggers[i] = NULL;
+  }
+}

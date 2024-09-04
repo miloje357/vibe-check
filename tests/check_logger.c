@@ -24,11 +24,10 @@ int shift_to_second_space(char **dest, int max_len) {
 FILE *test_file;
 char *test_str = NULL;
 int line_len;
-logger_id logger;
 
 void setup() {
   test_file = fopen(TEST_FILENAME, "w");
-  logger = init_logger(test_file, LOG_LEVEL_INFO, false);
+  init_logger(test_file, LOG_LEVEL_INFO, false);
   test_str = malloc(sizeof(char) * MAX_MESSAGE_LEN);
 }
 
@@ -37,7 +36,7 @@ void teardown() {
   remove(TEST_FILENAME);
   free(test_str);
   test_str = NULL;
-  close_logger(logger);
+  close_all_loggers();
 }
 
 void reopen_for_reading() {
