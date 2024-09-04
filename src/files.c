@@ -47,13 +47,14 @@ int set_standard_root(char **dir) {
 }
 
 bool set_rootpath(const char *custom_root_path) {
-  int len = asprintf(&vc_rootpath, "%s", custom_root_path);
-  if (len <= 0) {
-    DEV_ERROR("Can't open %s: Not enough memory", custom_root_path);
-    return false;
-  }
-
-  if (!custom_root_path) {
+  int len;
+  if (custom_root_path) {
+    len = asprintf(&vc_rootpath, "%s", custom_root_path);
+    if (len <= 0) {
+      DEV_ERROR("Can't open %s: Not enough memory", custom_root_path);
+      return false;
+    }
+  } else {
     len = set_standard_root(&vc_rootpath);
     if (!vc_rootpath) {
       return false;
@@ -79,7 +80,12 @@ bool set_rootpath(const char *custom_root_path) {
   return true;
 }
 
-void free_rootpath() { free(vc_rootpath); }
+void free_rootpath() {
+  if (vc_rootpath) {
+    free(vc_rootpath);
+    vc_rootpath = NULL;
+  }
+}
 
 void set_log_filepath(char **path) {
   if (!vc_rootpath) {
