@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -146,7 +147,39 @@ Logger *get_logger(FILE *output, LogLevel lvl, bool should_color) {
   return logger;
 }
 
-logger_id init_logger(FILE *output, LogLevel lvl, bool should_color) {
+bool open_logfile(const char *log_filepath, FILE **log_file,
+                  bool *should_color) {
+  if (memcmp(log_filepath, "stdout", 7) == 0) {
+    *log_file = stdout;
+    *should_color = true;
+    return true;
+  }
+  if (memcmp(log_filepath, "stderr", 7) == 0) {
+    *log_file = stderr;
+    *should_color = true;
+    return true;
+  }
+
+  FILE *file = fopen(log_filepath, "w");
+  if (!file) {
+    DEV_ERROR("Coudln't open %s: %s", log_filepath, strerror(errno));
+    return false;
+  }
+  *log_file = file;
+  *should_color = false;
+  return true;
+}
+
+logger_id init_logger(const char *output, LogLevel lvl) {
+  if (!output) {
+    DEV_ERROR("init_logger: output cannot be null");
+    return -1;
+  }
+  if (lvl < 0 || lvl >= 4) {
+    DEV_ERROR("init_logger: Non-standard LogLevel");
+    return -1;
+  }
+
   int next_logger_place = 0;
   while (loggers[next_logger_place]) {
     next_logger_place++;
@@ -155,7 +188,15 @@ logger_id init_logger(FILE *output, LogLevel lvl, bool should_color) {
       return -1;
     }
   }
-  Logger *logger = get_logger(output, lvl, should_color);
+
+  FILE *log_file;
+  bool should_color;
+  bool s = open_logfile(output, &log_file, &should_color);
+  if (!s) {
+    return -1;
+  }
+
+  Logger *logger = get_logger(log_file, lvl, should_color);
   logger->id = next_logger_place;
   loggers[next_logger_place] = logger;
   return logger->id;
@@ -164,6 +205,7 @@ logger_id init_logger(FILE *output, LogLevel lvl, bool should_color) {
 bool close_logger(logger_id id) {
   for (int i = 0; i < MAX_LOGGERS; i++) {
     if (loggers[i] && loggers[i]->id == id) {
+      fclose(loggers[i]->output);
       free(loggers[i]);
       loggers[i] = NULL;
       return true;
@@ -177,6 +219,7 @@ void close_all_loggers() {
     if (!loggers[i]) {
       continue;
     }
+    fclose(loggers[i]->output);
     free(loggers[i]);
     loggers[i] = NULL;
   }

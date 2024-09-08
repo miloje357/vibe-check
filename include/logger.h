@@ -2,7 +2,6 @@
 #define LOGGER_H_
 
 #include <stdbool.h>
-#include <stdio.h>
 typedef enum {
   LOG_LEVEL_DEBUG,
   LOG_LEVEL_INFO,
@@ -40,17 +39,16 @@ void log_fmessage(LogLevel lvl, const char *format_string, ...)
 
 /**
  * Initializes a logger
- * @param output - the file to which to log to
+ * @param output - the filepath of the log file or strings "stdout"/"stderr" for
+ *                 output to terminal
  * @param lvl - the logger's log level (any messages that have a lesser log
  *              level won't be logged)
- * @param should_color - set to true if outputing to the terminal (stdout,
- *                       stderr)
  * @return a logger id that is used for closing the logger or -1 if no logger
  *         could be initialized
  * @see tests/check_logger.c
  * @since 0.1.0
  */
-logger_id init_logger(FILE *output, LogLevel lvl, bool should_color);
+logger_id init_logger(const char *output, LogLevel lvl);
 
 /**
  * Closes a logger (if it's initialized)
