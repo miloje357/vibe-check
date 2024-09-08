@@ -8,7 +8,7 @@
 logger_id logger;
 #define MAX_ITER 1000
 
-void setup() { logger = init_logger(stderr, LOG_LEVEL_DEBUG, true); }
+void setup() { logger = init_logger("stdout", LOG_LEVEL_DEBUG); }
 
 void teardown() { close_logger(logger); }
 

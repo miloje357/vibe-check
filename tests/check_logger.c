@@ -2,6 +2,7 @@
 #include <check.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TEST_FILENAME "test.log"
 
@@ -26,8 +27,8 @@ char *test_str = NULL;
 int line_len;
 
 void setup() {
-  test_file = fopen(TEST_FILENAME, "w");
-  init_logger(test_file, LOG_LEVEL_INFO, false);
+  int s = init_logger(TEST_FILENAME, LOG_LEVEL_INFO);
+  ck_assert_int_ne(s, -1);
   test_str = malloc(sizeof(char) * MAX_MESSAGE_LEN);
 }
 
@@ -36,11 +37,10 @@ void teardown() {
   remove(TEST_FILENAME);
   free(test_str);
   test_str = NULL;
-  close_all_loggers();
 }
 
 void reopen_for_reading() {
-  fclose(test_file);
+  close_all_loggers();
   test_file = fopen(TEST_FILENAME, "r");
 }
 
@@ -137,7 +137,7 @@ START_TEST(test_formating_heap_string) {
 END_TEST
 
 START_TEST(test_init_logger) {
-  logger_id logger = init_logger(stdout, LOG_LEVEL_INFO, true);
+  logger_id logger = init_logger("stdout", LOG_LEVEL_INFO);
   ck_assert_int_ne(logger, -1);
 }
 END_TEST
@@ -146,7 +146,7 @@ START_TEST(test_init_max_loggers) {
   int max_loggers = 9;
   logger_id last_logger;
   for (int i = 0; i <= max_loggers; i++) {
-    last_logger = init_logger(stdout, LOG_LEVEL_INFO, true);
+    last_logger = init_logger("stdout", LOG_LEVEL_INFO);
   }
   ck_assert_int_eq(last_logger, -1);
 }
@@ -159,7 +159,7 @@ START_TEST(test_close_no_loggers) {
 END_TEST
 
 START_TEST(test_close_logger) {
-  logger_id logger = init_logger(stdout, LOG_LEVEL_INFO, true);
+  logger_id logger = init_logger("stdout", LOG_LEVEL_INFO);
   bool is_closed = close_logger(logger);
   ck_assert_int_eq(is_closed, 1);
 }

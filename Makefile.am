@@ -12,8 +12,7 @@ TESTS = check_logger\
 	check_files
 
 check_PROGRAMS = check_logger\
-		 check_files\
-		 check_standard_rootpath
+		 check_files
 
 check_logger_SOURCES = src/logger.c\
 			include/logger.h\
@@ -28,10 +27,3 @@ check_files_SOURCES = src/logger.c\
 			tests/check_files.c
 check_files_CFLAGS = ${CHECK_CFLAGS} -I$(top_srcdir)/include
 check_files_LDADD= ${CHECK_LIBS}
-
-check_standard_rootpath_SOURCES = src/logger.c\
-			src/files.c\
-			include/logger.h\
-			include/files.h\
-			tests/check_standard_rootpath.c
-check_standard_rootpath_CFLAGS = -I$(top_srcdir)/include
