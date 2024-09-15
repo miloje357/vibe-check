@@ -7,6 +7,7 @@ vibe_check_SOURCES = \
 	include/files.h
 vibe_check_CFLAGS = -g -Wall -Werror -O3\
 		    -I$(top_srcdir)/include
+dist_noinst_DATA = get_token.py
 
 TESTS = check_logger\
 	check_files
